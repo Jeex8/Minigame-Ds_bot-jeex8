@@ -52,6 +52,8 @@ class RandomThings(commands.Cog):
                     member = ctx.guild.get_member(ctx.message.mentions[0].id)
                     await ctx.send(f'{ctx.author.mention} вызывает {member.mention} на дуэль в викторину "города"')
 
+        await ctx.message.delete()
+
     @commands.command(name='Ход_викторина')
     async def step_victorina(self, ctx, city):
         dbsos = db_session.create_session()
@@ -83,6 +85,8 @@ class RandomThings(commands.Cog):
         else:
             await ctx.send('Сейчас не ваш ход')
 
+        await ctx.message.delete()
+
     @commands.command(name='стоп_викторина')
     async def stop_victorina(self, ctx):
         dbsos = db_session.create_session()
@@ -98,6 +102,8 @@ class RandomThings(commands.Cog):
         user.opponent = None
         dbsos.commit()
         await ctx.send(f'{member1.mention} - проиграл,  {member2.mention} - выиграл в викторину "города"')
+
+        await ctx.message.delete()
 
     @commands.command(name='randint')
     async def my_randint(self, ctx, min_int, max_int):
@@ -124,25 +130,25 @@ class RandomThings(commands.Cog):
                 if not user.pole:
                     if option.lower() in ['камень', 'ножницы', 'бумага']:
                         if opponent.pole:
-                            if option == 'камень' and opponent.pole == 'ножницы':
+                            if option.lower() == 'камень' and opponent.pole.lower() == 'ножницы':
                                 await channel.send(f'{member1.mention} победил {member2.mention}'
                                                    f' в дуэли камень ножницы бумага! Выигрышный предмет: Камень')
-                            if option == 'ножницы' and opponent.pole == 'бумага':
+                            if option.lower() == 'ножницы' and opponent.pole.lower() == 'бумага':
                                 await channel.send(f'{member1.mention} победил {member2.mention}'
                                                    f' в дуэли камень ножницы бумага! Выигрышный предмет: Ножницы')
-                            if option == 'бумага' and opponent.pole == 'камень':
+                            if option.lower() == 'бумага' and opponent.pole.lower() == 'камень':
                                 await channel.send(f'{member1.mention} победил {member2.mention}'
                                                    f' в дуэли камень ножницы бумага! Выигрышный предмет: Бумага')
-                            if option == 'камень' and opponent.pole == 'бумага':
+                            if option.lower() == 'камень' and opponent.pole.lower() == 'бумага':
                                 await channel.send(f'{member2.mention} победил {member1.mention}'
                                                    f' в дуэли камень ножницы бумага! Выигрышный предмет: Бумага')
-                            if option == 'ножницы' and opponent.pole == 'камень':
+                            if option.lower() == 'ножницы' and opponent.pole.lower() == 'камень':
                                 await channel.send(f'{member2.mention} победил {member1.mention}'
                                                    f' в дуэли камень ножницы бумага! Выигрышный предмет: Камень')
-                            if option == 'бумага' and opponent.pole == 'ножницы':
+                            if option.lower() == 'бумага' and opponent.pole.lower() == 'ножницы':
                                 await channel.send(f'{member2.mention} победил {member1.mention}'
                                                    f' в дуэли камень ножницы бумага! Выигрышный предмет: Ножницы')
-                            if option.lower() == opponent.pole:
+                            if option.lower() == opponent.pole.lower():
                                 await channel.send(f'{member1.mention} - {member2.mention} ничья!'
                                                    f' в дуэли камень ножницы бумага! Предмет: {option}')
                             user.pole = None
@@ -174,28 +180,74 @@ class RandomThings(commands.Cog):
             lol = eval(user.pole)
             lol2 = eval(opponent.pole)
             pole = lol[0]
-            if pole[row - 1][column - 1] != '0' and pole[row - 1][column - 1] != '+':
+            if pole[int(row) - 1][int(column) - 1] != 'O' and pole[int(row) - 1][int(column) - 1] != '+':
                 pole[int(row) - 1][int(column) - 1] = lol[1]
                 user.stage = 'Игра, крестики нолики, ходит соперник'
                 user.pole = str([pole, lol[1]])
                 opponent.stage = 'Игра, крестики нолики, вы ходите'
                 opponent.pole = str([pole, lol2[1]])
+                yuser = ctx.guild.get_member(user.gaymer)
+                oppo = ctx.guild.get_member(opponent.gaymer)
                 dbsos.commit()
                 await ctx.send(f'{"| ".join(pole[0])}\n{"| ".join(pole[1])}\n{"| ".join(pole[2])}')
+                for row in range(3):
+                    if (pole[row][0] == pole[row][1] == pole[row][2]) and (pole[row][0] != ' '):
+                        await ctx.send(f'{yuser.mention} побеждает в "Крестики нолики" {oppo.mention}')
+                        user.pole = None
+                        user.stage = None
+                        user.opponent = None
+                        opponent.pole = None
+                        opponent.stage = None
+                        opponent.opponent = None
+                        dbsos.commit()
+                for column in range(3):
+                    if (pole[0][column] == pole[1][column] == pole[2][column]) and (pole[0][column] != ' '):
+                        await ctx.send(f'{yuser.mention} побеждает в "Крестики нолики" {oppo.mention}')
+                        user.pole = None
+                        user.stage = None
+                        user.opponent = None
+                        opponent.pole = None
+                        opponent.stage = None
+                        opponent.opponent = None
+                        dbsos.commit()
+                if (pole[0][0] == pole[1][1] == pole[2][2]) and (pole[0][0] != ' '):
+                    await ctx.send(f'{yuser.mention} побеждает в "Крестики нолики" {oppo.mention}')
+                    user.pole = None
+                    user.stage = None
+                    user.opponent = None
+                    opponent.pole = None
+                    opponent.stage = None
+                    opponent.opponent = None
+                    dbsos.commit()
+                if (pole[0][2] == pole[1][1] == pole[2][0]) and (pole[0][2] != ' '):
+                    await ctx.send(f'{yuser.mention} побеждает в "Крестики нолики" {oppo.mention}')
+                    user.pole = None
+                    user.stage = None
+                    user.opponent = None
+                    opponent.pole = None
+                    opponent.stage = None
+                    opponent.opponent = None
+                    dbsos.commit()
+                if user.pole:
+                    flag = False
+                    for i in range(3):
+                        for j in range(3):
+                            if pole[i][j] == ' ':
+                                flag = True
+                                break
+                    if not flag:
+                        await ctx.send(f'{yuser.mention} вышел в ничью с {oppo.mention} в "Крестики нолики"')
+                        user.pole = None
+                        user.stage = None
+                        user.opponent = None
+                        opponent.pole = None
+                        opponent.stage = None
+                        opponent.opponent = None
+                        dbsos.commit()
             else:
                 await ctx.send('Клетка занята')
 
-    def tictactoe(self, ctx, username, turn):
-        for row in range(0, 7, 3):
-            if (TTT[row] == TTT[row + 1] == TTT[row + 2]) and (TTT[row] != 0):
-                winner = TTT[row]
-        for col in range(0, 3, 1):
-            if (TTT[col] == TTT[col + 3] == TTT[col + 6]) and (TTT[col] != 0):
-                winner = TTT[col]
-        if (TTT[0] == TTT[4] == TTT[8]) and (TTT[0] != 0):
-            winner = TTT[0]
-        if (TTT[2] == TTT[4] == TTT[6]) and (TTT[2] != 0):
-            winner = TTT[2]
+        await ctx.message.delete()
 
     @commands.command(name='принять')
     async def prinyat(self, ctx):
@@ -207,18 +259,20 @@ class RandomThings(commands.Cog):
             await ctx.send('Игра началась')
             await ctx.send('Напишите /ход, и введите номер столбца и колонки в которой хотите поставить символ')
             user.pole = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-            await ctx.send(
-                f'\n----\n{"| ".join(user.pole[:3])}'
-                f'\n----\n{"| ".join(user.pole[3:6])}\n----\n{"| ".join(user.pole[6:])}\n')
-            opponent.pole = str([[['0', '0', '0'], ['0', '0', '0'], ['0', '0', '0']], '+'])
-            user.pole = str([[['0', '0', '0'], ['0', '0', '0'], ['0', '0', '0']], 'O'])
+            await ctx.send(f'{"| ".join(user.pole[:3])}\n{"| ".join(user.pole[3:6])}\n{"| ".join(user.pole[6:])}')
+            opponent.pole = str([[[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']], '+'])
+            user.pole = str([[[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']], 'O'])
             pervoh = random.randint(0, 1)
+            yuser = ctx.guild.get_member(user.gaymer)
+            oppo = ctx.guild.get_member(opponent.gaymer)
             if pervoh == 0:
                 opponent.stage = 'Игра, крестики нолики, ходит соперник'
                 user.stage = 'Игра, крестики нолики, вы ходите'
+                await ctx.send(f'Первым ходит {yuser}')
             elif pervoh == 1:
                 user.stage = 'Игра, крестики нолики, ходит соперник'
                 opponent.stage = 'Игра, крестики нолики, вы ходите'
+                await ctx.send(f'Первым ходит {oppo}')
             dbsos.commit()
         elif user.stage == 'Ожидание игры камень ножницы бумага':
             await ctx.send('Игра началась')
@@ -235,6 +289,8 @@ class RandomThings(commands.Cog):
             user.channel_id = opponent.channel_id
             dbsos.commit()
             await ctx.send(f'Викторина началась {member.mention} ходит первым')
+
+        await ctx.message.delete()
 
     @commands.command(name='cz')
     async def cz(self, ctx):
@@ -295,6 +351,21 @@ class RandomThings(commands.Cog):
                     dbsos.commit()
                     member = ctx.guild.get_member(ctx.message.mentions[0].id)
                     await ctx.send(f'{ctx.author.mention} вызывает {member.mention} на дуэль в камень ножницы бумага')
+
+        await ctx.message.delete()
+
+    @commands.command(name='help')
+    async def help(self, ctx):
+        await ctx.send('/Викторина "@ping" - Приглашение игрока в викторину города'
+                       '/Ход_викторина "город" - Делает ход в викторине'
+                       '/стоп_викторина - Игрок написавший это, проигрывает в викторине'
+                       '/randint "первое число" "второе число" - выбирает рандомное число из заданного промежутка'
+                       '/rps "@ping" - Приглашение игрока в камень ножницы бумага'
+                       '/cz "@ping" - Приглашение игрока в крестики нолики'
+                       '/принять - Принимает приглашение в любую игру'
+                       '/ход "первое число - ряд" "второе число - столб" - Делает ход в игре крестики нолики'
+                       '/Готов "Камень" или "Ножницы" или "Бумага" - Пишется боту в личку, делает ход в КНБ')
+        await ctx.message.delete()
 
 
 async def main():
