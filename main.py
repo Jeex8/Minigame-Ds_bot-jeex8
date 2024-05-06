@@ -8,7 +8,7 @@ from data.users import User
 from dadata import Dadata
 from config import TOKEN, token, secret
 
-logger = logging.getLogger('discord')#Логирование
+logger = logging.getLogger('discord')  # Логирование
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
@@ -24,7 +24,7 @@ class RandomThings(commands.Cog):
         self.bot = bot
 
     @commands.command(name='Викторина')
-    async def victorina(self, ctx):# Команда викторины, читайте команду помощь
+    async def victorina(self, ctx):  # Команда викторины, читайте команду помощь
         dbsos = db_session.create_session()
         user = dbsos.query(User).filter(User.gaymer == ctx.author.id, User.server_id == ctx.message.guild.id).first()
         if not user:
@@ -55,7 +55,7 @@ class RandomThings(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(name='Ход_викторина')
-    async def step_victorina(self, ctx, city):# Команда хода викторины, читайте команду помощь
+    async def step_victorina(self, ctx, city):  # Команда хода викторины, читайте команду помощь
         dbsos = db_session.create_session()
         user = dbsos.query(User).filter(User.gaymer == ctx.author.id, User.server_id == ctx.message.guild.id).first()
         opponent = dbsos.query(User).filter(User.gaymer == user.opponent).first()
@@ -85,10 +85,8 @@ class RandomThings(commands.Cog):
         else:
             await ctx.send('Сейчас не ваш ход')
 
-        await ctx.message.delete()
-
     @commands.command(name='стоп_викторина')
-    async def stop_victorina(self, ctx):# Команда остановки викторины, читайте команду помощь
+    async def stop_victorina(self, ctx):  # Команда остановки викторины, читайте команду помощь
         dbsos = db_session.create_session()
         user = dbsos.query(User).filter(User.gaymer == ctx.author.id, User.server_id == ctx.message.guild.id).first()
         opponent = dbsos.query(User).filter(User.gaymer == user.opponent).first()
@@ -106,13 +104,13 @@ class RandomThings(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(name='randint')
-    async def my_randint(self, ctx, min_int, max_int):# Команда игральных кубиков, читайте команду помощь
+    async def my_randint(self, ctx, min_int, max_int):  # Команда игральных кубиков, читайте команду помощь
         num = random.randint(int(min_int), int(max_int))
         await ctx.send(num)
         await ctx.message.delete()
 
     @commands.command(name='Готов')
-    async def rps_ready(self, ctx, option):# Команда хода камень ножницы бумага, читайте команду помощь
+    async def rps_ready(self, ctx, option):  # Команда хода камень ножницы бумага, читайте команду помощь
         dbsos = db_session.create_session()
         users = dbsos.query(User).filter(User.gaymer == ctx.author.id).all()
         user = users[0]
@@ -172,7 +170,7 @@ class RandomThings(commands.Cog):
             await ctx.send('НАПИШИТЕ БОТУ В ЛИЧКУ!1111!!!111')
 
     @commands.command(name='ход')
-    async def hod(self, ctx, row, column):# Команда хода крестиков ноликов, читайте команду помощь
+    async def hod(self, ctx, row, column):  # Команда хода крестиков ноликов, читайте команду помощь
         dbsos = db_session.create_session()
         user = dbsos.query(User).filter(User.gaymer == ctx.author.id, User.server_id == ctx.message.guild.id).first()
         opponent = dbsos.query(User).filter(User.gaymer == user.opponent).first()
@@ -250,7 +248,7 @@ class RandomThings(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(name='принять')
-    async def prinyat(self, ctx):# Команда принять, читайте команду помощь
+    async def prinyat(self, ctx):  # Команда принять, читайте команду помощь
         dbsos = db_session.create_session()
         user = dbsos.query(User).filter(User.gaymer == ctx.author.id, User.server_id == ctx.message.guild.id).first()
         opponent = dbsos.query(User).filter(User.gaymer == user.opponent).first()
@@ -293,7 +291,7 @@ class RandomThings(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(name='cz')
-    async def cz(self, ctx):# Команда крестиков ноликов, читайте команду помощь
+    async def cz(self, ctx):  # Команда крестиков ноликов, читайте команду помощь
         dbsos = db_session.create_session()
         user = dbsos.query(User).filter(User.gaymer == ctx.author.id, User.server_id == ctx.message.guild.id).first()
         if not user:
@@ -324,7 +322,7 @@ class RandomThings(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(name='rps')
-    async def rps(self, ctx):# Команда камень ножницы бумага, читайте команду помощь
+    async def rps(self, ctx):  # Команда камень ножницы бумага, читайте команду помощь
         dbsos = db_session.create_session()
         user = dbsos.query(User).filter(User.gaymer == ctx.author.id, User.server_id == ctx.message.guild.id).first()
         if not user:
@@ -355,7 +353,7 @@ class RandomThings(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(name='помощь')
-    async def help(self, ctx):# Команда помощи
+    async def help(self, ctx):  # Команда помощи
         await ctx.send('/Викторина "@ping" - Приглашение игрока в викторину города\n'
                        '/Ход"нижнее подчеркивание"викторина "город" - Делает ход в викторине\n'
                        '/стоп"нижнее подчеркивание"викторина - Игрок написавший это, проигрывает в викторине\n'
