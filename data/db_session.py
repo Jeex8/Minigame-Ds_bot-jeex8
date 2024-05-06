@@ -6,7 +6,7 @@ SqlAlchemyBase = dec.declarative_base()
 __factory = None
 
 
-def global_init(db_file):
+def global_init(db_file):#Код формирования бд
     global __factory
     if __factory:
         return
