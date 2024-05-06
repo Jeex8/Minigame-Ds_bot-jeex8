@@ -1,0 +1,4 @@
+dadata    21.10.1
+SQLAlchemy    2.0.29
+discord.py    2.3.2
+
